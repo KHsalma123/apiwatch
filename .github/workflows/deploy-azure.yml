@@ -1,0 +1,35 @@
+# PREPARED, NOT ACTIVE: runs only when you start it by hand, and only after you
+# created the Azure resources (docs/AZURE.md) and added the secrets listed below.
+# It creates NO Azure resource: it only pushes images and updates existing apps.
+name: Deploy to Azure (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # OIDC login: no long-lived Azure password stored in GitHub
+  contents: read
+
+env:
+  REGISTRY: ${{ secrets.ACR_LOGIN_SERVER }}   # e.g. apiwatchacr.azurecr.io
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Build and push backend image
+        run: |
+          az acr login --name "${REGISTRY%%.*}"
+          docker build -t "$REGISTRY/apiwatch-backend:${{ github.sha }}" backend
+          docker push "$REGISTRY/apiwatch-backend:${{ github.sha }}"
+      - name: Update API and worker container apps
+        run: |
+          az containerapp update -n apiwatch-api    -g ${{ secrets.AZURE_RESOURCE_GROUP }} --image "$REGISTRY/apiwatch-backend:${{ github.sha }}"
+          az containerapp update -n apiwatch-worker -g ${{ secrets.AZURE_RESOURCE_GROUP }} --image "$REGISTRY/apiwatch-backend:${{ github.sha }}"
+      # The frontend is deployed to Azure Static Web Apps (see docs/AZURE.md).

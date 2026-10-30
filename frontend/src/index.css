@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-ink-950: #0b1820;
+  --color-ink-900: #10202a;
+  --color-ink-800: #1a2f3c;
+  --color-ink-600: #46606f;
+  --color-ink-400: #7d939f;
+  --color-paper: #f3f6f5;
+  --color-line: #d9e2df;
+  --color-steel: #0e6377;
+  --color-steel-dark: #0a4b5b;
+  --color-signal: #14805a;
+  --color-signal-soft: #dff3ea;
+  --color-signal-glow: #2fd08e;
+  --color-alarm: #bf3027;
+  --color-alarm-soft: #fbe3e0;
+  --color-amber: #9a6410;
+  --color-amber-soft: #fbefd5;
+}
+
+html, body, #root { height: 100%; }
+body { background: var(--color-paper); color: var(--color-ink-900); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+:focus-visible { outline: 2px solid var(--color-steel); outline-offset: 2px; }
+
+/* The one animated element: the live dot on healthy monitors. */
+@keyframes live { 0%, 100% { opacity: 1 } 50% { opacity: .35 } }
+.live-dot { animation: live 2.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
