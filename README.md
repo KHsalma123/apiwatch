@@ -17,15 +17,6 @@ Track the availability, status codes and response times of your APIs from a sing
 
 ---
 
-## Screenshots
-
-| Dashboard | Monitor details |
-|---|---|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Monitor details](docs/screenshots/monitor-details.png) |
-
-| Monitors | Incidents |
-|---|---|
-| ![Monitors](docs/screenshots/monitors.png) | ![Incidents](docs/screenshots/incidents.png) |
 
 ## Features
 
