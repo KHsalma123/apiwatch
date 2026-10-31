@@ -1,0 +1,28 @@
+services:
+  backend:
+    image: ghcr.io/khsalma123/apiwatch-backend:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+      MONGODB_DB: ${MONGODB_DB:-apiwatch}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+    expose:
+      - "8000"
+
+  worker:
+    image: ghcr.io/khsalma123/apiwatch-backend:latest
+    restart: unless-stopped
+    command: ["python", "-m", "app.monitoring.worker"]
+    env_file: .env
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+      MONGODB_DB: ${MONGODB_DB:-apiwatch}
+
+  frontend:
+    image: ghcr.io/khsalma123/apiwatch-frontend:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
