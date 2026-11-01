@@ -10,6 +10,7 @@ from app.core.config import get_settings
 from app.core.rate_limit import limiter
 from app.database import mongo
 from app.routers import auth, dashboard, incidents, monitors, users
+from prometheus_fastapi_instrumentator import Instrumentator
 
 API_PREFIX = "/api/v1"
 
@@ -39,6 +40,12 @@ def create_app() -> FastAPI:
     @app.get(f"{API_PREFIX}/health", tags=["system"])
     async def health():
         return {"status": "ok"}
+
+    Instrumentator().instrument(app).expose(
+        app,
+        endpoint="/metrics",
+        include_in_schema=False,
+    )
 
     return app
 
